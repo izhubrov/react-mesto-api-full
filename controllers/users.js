@@ -32,7 +32,13 @@ const setUserInfo = (req, res) => {
     },
   )
     .then((user) => res.send(user))
-    .catch((error) => sendErrorResponse(error, 'Переданы некорректные данные при обновлении профиля', res));
+    .catch((error) => {
+      if (!User.findById(req.user._id)) {
+        sendErrorResponse(error, 'Запрашиваемый пользователь не найден', res);
+      } else {
+        sendErrorResponse(error, 'Переданы некорректные данные при обновлении профиля', res);
+      }
+    });
 };
 
 const setUserAvatar = (req, res) => {
@@ -47,7 +53,13 @@ const setUserAvatar = (req, res) => {
     },
   )
     .then((user) => res.send(user))
-    .catch((error) => sendErrorResponse(error, 'Переданы некорректные данные при обновлении аватара пользователя', res));
+    .catch((error) => {
+      if (!User.findById(req.user._id)) {
+        sendErrorResponse(error, 'Запрашиваемый пользователь не найден', res);
+      } else {
+        sendErrorResponse(error, 'Переданы некорректные данные при обновлении аватара пользователя', res);
+      }
+    });
 };
 
 module.exports = {

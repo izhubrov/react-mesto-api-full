@@ -1,12 +1,14 @@
 const sendError = (error, errorText, res) => {
   if (['CastError', 'Not Found'].includes(error.name)) {
-    return res.status(404).send({ message: errorText });
+    const ERROR_CODE = 404;
+    return res.status(ERROR_CODE).send({ message: errorText });
   }
   if (error.name === 'ValidationError') {
-    return res.status(400).send({ message: errorText });
+    const ERROR_CODE = 400;
+    return res.status(ERROR_CODE).send({ message: errorText });
   }
-
-  return res.status(500).send({ message: 'Ошибка на стороне сервера' });
+  const ERROR_CODE = 500;
+  return res.status(ERROR_CODE).send({ message: 'Ошибка на стороне сервера' });
 };
 
 module.exports = sendError;

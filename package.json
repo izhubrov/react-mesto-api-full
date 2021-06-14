@@ -11,15 +11,15 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/yandex-praktikum/express-mesto.git"
+    "url": "git+https://github.com/izhubrov/express-mesto"
   },
   "keywords": [],
   "author": "Ivan Zhubrov",
   "license": "ISC",
   "bugs": {
-    "url": "https://github.com/yandex-praktikum/express-mesto/issues"
+    "url": "https://github.com/izhubrov/express-mesto/issues"
   },
-  "homepage": "https://github.com/yandex-praktikum/express-mesto#readme",
+  "homepage": "https://github.com/izhubrov/express-mesto#readme",
   "devDependencies": {
     "eslint": "^7.28.0",
     "eslint-config-airbnb-base": "^14.2.1",

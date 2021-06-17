@@ -35,6 +35,7 @@ const likeCard = (req, res) => {
     { $addToSet: { likes: req.user._id } },
     { new: true },
   )
+    .orFail()
     .populate(['likes', 'owner'])
     .then((card) => res.send(card))
     .catch((error) => sendError({ error, res, errorNotFoundText: 'Запрашиваемая карточка не найдена' }));
@@ -47,6 +48,7 @@ const dislikeCard = (req, res) => {
     { $pull: { likes: req.user._id } },
     { new: true },
   )
+    .orFail()
     .populate(['likes', 'owner'])
     .then((card) => res.send(card))
     .catch((error) => sendError({ error, res, errorNotFoundText: 'Запрашиваемая карточка не найдена' }));

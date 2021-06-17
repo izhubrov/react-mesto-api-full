@@ -29,6 +29,6 @@
   "dependencies": {
     "express": "^4.17.1",
     "helmet": "^4.6.0",
-    "mongoose": "^5.12.13"
+    "mongoose": "^5.12.14"
   }
 }

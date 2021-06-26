@@ -1,57 +1,57 @@
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 const User = require('../models/user');
-const sendError = require('../helpers/sendError');
-const checkIdValidation = require('../helpers/checkIdValidation');
+const UnauthorizedError = require('../errors/unauthorized-err');
+const NotFoundError = require('../errors/not-found-err');
 
-const login = (req, res) => {
+const login = (req, res, next) => {
   const { email, password } = req.body;
   User.findOne({ email }).select('+password')
     .then((user) => {
       if (!user) {
-        return Promise.reject(new Error('Неправильные почта или пароль'));
+        throw new UnauthorizedError('Неправильные почта или пароль');
       }
       return bcrypt.compare(password, user.password).then((isMatched) => {
         if (!isMatched) {
-          return Promise.reject(new Error('Неправильные почта или пароль'));
+          throw new UnauthorizedError('Неправильные почта или пароль');
         }
         const token = jwt.sign({ _id: user._id }, 'd14c698d0500ab4a6ee06a893dd351dd5d5b3c53cbd6692ed0d900d615bc5ec3', { expiresIn: '7d' });
         return res.cookie('jwt', token, { maxAge: 3600000 * 24 * 7 }).end();
       });
     })
-    .catch((error) => res.status(401).send({ message: error.message }));
+    .catch(next);
 };
 
-const readUsers = (req, res) => {
+const readUsers = (req, res, next) => {
   User.find({})
     .then((users) => res.send(users))
-    .catch((error) => sendError({ error, res }));
+    .catch(next);
 };
 
-const readUserInfo = (req, res) => {
-  checkIdValidation({
-    res,
-    id: req.params.userId,
-    errorText: 'Переданы невалидные данные id пользователя',
-  });
+const readUserInfo = (req, res, next) => {
   User.findById(req.params.userId)
-    .orFail()
-    .then((user) => res.send(user))
-    .catch((error) => sendError({ error, res, errorNotFoundText: 'Запрашиваемый пользователь не найден' }));
+    .then((user) => {
+      if (!user) {
+        throw new NotFoundError('Запрашиваемый пользователь не найден');
+      }
+      res.send(user);
+    })
+    .catch(next);
 };
 
-const readCurrentUserInfo = (req, res) => {
+const readCurrentUserInfo = (req, res, next) => {
   const { user } = req;
   User.findById(user._id)
-    .then((foundUser) => res.send(foundUser))
-    .catch((error) => sendError({
-      error,
-      errorText: 'Текущий пользователь не найден',
-      res,
-    }));
+    .then((foundUser) => {
+      if (!foundUser) {
+        throw new NotFoundError('Текущий пользователь не найден');
+      }
+      res.send(foundUser);
+    })
+    .catch(next);
 };
 
-const createUser = (req, res) => {
+const createUser = (req, res, next) => {
   const {
     name, about, avatar, email, password,
   } = req.body;
@@ -64,15 +64,15 @@ const createUser = (req, res) => {
       email,
       password: hash,
     }))
-    .then((user) => res.send(user))
-    .catch((error) => sendError({
-      error,
-      errorText: 'Переданы некорректные данные при создании пользователя',
-      res,
-    }));
+    .then((user) => {
+      res.send({
+        name: user.name, about: user.about, avatar: user.avatar, email: user.email,
+      });
+    })
+    .catch(next);
 };
 
-const setUserInfo = (req, res) => {
+const setUserInfo = (req, res, next) => {
   const { name: newName, about: newAbout } = req.body;
   User.findByIdAndUpdate(
     req.user._id,
@@ -83,16 +83,16 @@ const setUserInfo = (req, res) => {
       upsert: false,
     },
   )
-    .orFail(new Error('Not Found'))
-    .then((user) => res.send(user))
-    .catch((error) => sendError({
-      error,
-      errorText: 'Переданы некорректные данные при обновлении профиля',
-      res,
-    }));
+    .then((user) => {
+      if (!user) {
+        throw new NotFoundError('Текущий пользователь не найден');
+      }
+      res.send(user);
+    })
+    .catch(next);
 };
 
-const setUserAvatar = (req, res) => {
+const setUserAvatar = (req, res, next) => {
   const { avatar: newAvatar } = req.body;
   User.findByIdAndUpdate(
     req.user._id,
@@ -103,14 +103,13 @@ const setUserAvatar = (req, res) => {
       upsert: false,
     },
   )
-    .orFail(new Error('Not Found'))
-    .then((user) => res.send(user))
-    .catch((error) => sendError({
-      error,
-      errorText:
-          'Переданы некорректные данные при обновлении аватара пользователя',
-      res,
-    }));
+    .then((user) => {
+      if (!user) {
+        throw new NotFoundError('Текущий пользователь не найден');
+      }
+      res.send(user);
+    })
+    .catch(next);
 };
 
 module.exports = {

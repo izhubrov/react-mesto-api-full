@@ -1,6 +1,6 @@
 const jsonwebtoken = require('jsonwebtoken');
 const UnauthorizedError = require('../errors/unauthorized-err');
-const ForbiddenError = require('../errors/forbidden-err');
+const { randomString } = require('../utils');
 
 const auth = (req, res, next) => {
   const { jwt } = req.cookies;
@@ -14,9 +14,9 @@ const auth = (req, res, next) => {
   }
 
   try {
-    jsonwebtoken.verify(jwt, 'd14c698d0500ab4a6ee06a893dd351dd5d5b3c53cbd6692ed0d900d615bc5ec3', (err, decoded) => {
+    jsonwebtoken.verify(jwt, randomString, (err, decoded) => {
       if (err) {
-        throw new ForbiddenError('Недостаточно прав. Необходима авторизация');
+        throw new UnauthorizedError('Необходима авторизация');
       }
       req.user = decoded;
       next();

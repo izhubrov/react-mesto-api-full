@@ -2,12 +2,15 @@ const express = require('express');
 const mongoose = require('mongoose');
 const helmet = require('helmet');
 const cookieParser = require('cookie-parser');
-const { errors, Joi, celebrate } = require('celebrate');
+const {
+ errors, Joi, celebrate, isCelebrateError,
+} = require('celebrate');
 const usersRouter = require('./routes/users');
 const cardsRouter = require('./routes/cards');
 const { login, createUser } = require('./controllers/users');
 const auth = require('./middlewares/auth');
 const NotFoundError = require('./errors/not-found-err');
+const ValidationError = require('./errors/validation-err');
 
 const { PORT = 3000 } = process.env;
 const app = express();
@@ -44,7 +47,13 @@ app.use('*', (req, res, next) => {
   next(error);
 });
 
-app.use(errors());
+app.use((err, req, res, next) => {
+  if (isCelebrateError(err)) {
+    const error = new ValidationError('Переданы некорректные данные');
+    next(error);
+  }
+  next(err);
+});
 
 app.use((err, req, res, next) => {
   const { code = 500, message, name } = err;

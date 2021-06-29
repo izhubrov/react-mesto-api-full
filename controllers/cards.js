@@ -24,7 +24,7 @@ const createCard = async (req, res, next) => {
 
 const removeCard = async (req, res, next) => {
   try {
-    let cardToRemove = await Card.findById(req.params.cardId);
+    const cardToRemove = await Card.findById(req.params.cardId);
 
     if (!cardToRemove) throw new NotFoundError('Запрашиваемая карточка не найдена');
 
@@ -32,8 +32,8 @@ const removeCard = async (req, res, next) => {
       throw new ForbiddenError('Недостаточно прав');
     }
 
-    cardToRemove = await Card.findByIdAndRemove(req.params.cardId);
-    if (cardToRemove._id) res.send({ message: 'Пост удалён' });
+    await Card.findByIdAndRemove(req.params.cardId);
+    res.send({ message: 'Пост удалён' });
   } catch (error) {
     next(error);
   }

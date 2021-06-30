@@ -73,9 +73,17 @@ const createUser = async (req, res, next) => {
 };
 
 const setUserInfo = async (req, res, next) => {
-  const { name: newName, about: newAbout } = req.body;
+  let { name: newName, about: newAbout } = req.body;
+  const id = req.user._id;
   try {
-    const user = await User.findByIdAndUpdate(
+    // проверим, существует ли пользователь и
+    // если какие-либо поля Имя или О себе не пераданы, берем их из существующего пользователя
+    const user = await User.findById(id);
+    if (!user) throw new NotFoundError('Текущий пользователь не найден');
+    newName = newName || user.name;
+    newAbout = newAbout || user.about;
+
+    const updatedUser = await User.findByIdAndUpdate(
       req.user._id,
       { name: newName, about: newAbout },
       {
@@ -84,8 +92,8 @@ const setUserInfo = async (req, res, next) => {
         upsert: false,
       },
     );
-    if (!user) throw new NotFoundError('Текущий пользователь не найден');
-    res.send(user);
+
+    res.send(updatedUser);
   } catch (error) {
     next(error);
   }

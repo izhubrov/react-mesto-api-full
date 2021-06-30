@@ -36,10 +36,10 @@ app.use('*', (req, res, next) => {
 
 app.use((err, req, res, next) => {
   // Если в celebrate будут другие параметры кроме body, params, их необходимо добавить в errorItem
-  const errorItem = err.details.get('body') || err.details.get('params');
-  console.log(errorItem.message.split('"').join(''));
   if (isCelebrateError(err)) {
-    const error = new ValidationError(`${errorMessages.incorrectData}${errorItem.message}`);
+    const errorItem = err.details.get('body') || err.details.get('params');
+    const additionalMessage = errorItem.message.split('"').join('');
+    const error = new ValidationError(`${errorMessages.incorrectData}${additionalMessage}`);
     next(error);
   }
   next(err);

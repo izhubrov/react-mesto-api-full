@@ -3,7 +3,7 @@ const jwt = require('jsonwebtoken');
 const User = require('../models/user');
 const UnauthorizedError = require('../errors/unauthorized-err');
 const NotFoundError = require('../errors/not-found-err');
-const { randomString } = require('../utils');
+const { randomString } = require('../utils/utils');
 
 const login = async (req, res, next) => {
   try {

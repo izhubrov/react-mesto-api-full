@@ -1,18 +1,21 @@
 const { celebrate, Joi } = require('celebrate');
-const { urlRegExp } = require('../utils');
+const { urlRegExp, passwordRegExp } = require('../utils/utils');
+const errorMessages = require('../utils/celebrateErrorMessages');
 
 const celebrateValidation = (params) => {
   const res = {};
 
   const items = {
-    email: Joi.string().email().required(),
-    password: Joi.string().required().min(6),
-    userId: Joi.string().alphanum().length(24),
-    name: Joi.string().min(2).max(30),
-    about: Joi.string().min(2).max(30),
-    avatar: Joi.string().pattern(new RegExp(urlRegExp)),
-    link: Joi.string().required().pattern(new RegExp(urlRegExp)),
-    cardId: Joi.string().alphanum().length(24),
+    email: Joi.string().email().required().messages(errorMessages.email),
+    password: Joi.string().required().pattern(new RegExp(passwordRegExp))
+      .messages(errorMessages.password),
+    userId: Joi.string().hex().label('Пользователь').length(24)
+      .messages(errorMessages.userId),
+    name: Joi.string().min(2).max(30).messages(errorMessages.name),
+    about: Joi.string().min(2).max(30).messages(errorMessages.about),
+    avatar: Joi.string().pattern(new RegExp(urlRegExp)).messages(errorMessages.avatar),
+    link: Joi.string().required().pattern(new RegExp(urlRegExp)).messages(errorMessages.link),
+    cardId: Joi.string().hex().length(24).messages(errorMessages.cardId),
   };
 
   Object.keys(params).forEach((param) => {

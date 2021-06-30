@@ -9,7 +9,8 @@ const { login, createUser } = require('./controllers/users');
 const auth = require('./middlewares/auth');
 const NotFoundError = require('./errors/not-found-err');
 const ValidationError = require('./errors/validation-err');
-const { mongoUrl, mongoSettings } = require('./utils');
+const { mongoUrl, mongoSettings } = require('./utils/utils');
+const errorMessages = require('./utils/celebrateErrorMessages');
 const celebrateValidation = require('./helpers/celebrateValidation');
 
 const { PORT = 3000 } = process.env;
@@ -34,20 +35,23 @@ app.use('*', (req, res, next) => {
 });
 
 app.use((err, req, res, next) => {
+  // Если в celebrate будут другие параметры кроме body, params, их необходимо добавить в errorItem
+  const errorItem = err.details.get('body') || err.details.get('params');
+  console.log(errorItem.message.split('"').join(''));
   if (isCelebrateError(err)) {
-    const error = new ValidationError('Переданы некорректные данные');
+    const error = new ValidationError(`${errorMessages.incorrectData}${errorItem.message}`);
     next(error);
   }
   next(err);
 });
 
+// eslint-disable-next-line no-unused-vars
 app.use((err, req, res, next) => {
   const { code = 500, message, name } = err;
   if (name === 'MongoError' && code === 11000) {
-    return res.status(409).send({ message: 'Пользователь с такой почтой уже существует' });
+    res.status(409).send({ message: 'Пользователь с такой почтой уже существует' });
   }
   res.status(code).send({ message: code === 500 ? 'Ошибка на стороне сервера' : message });
-  return next();
 });
 
 app.listen(PORT);

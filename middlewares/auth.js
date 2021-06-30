@@ -1,6 +1,6 @@
 const jsonwebtoken = require('jsonwebtoken');
 const UnauthorizedError = require('../errors/unauthorized-err');
-const { randomString } = require('../utils');
+const { randomString } = require('../utils/utils');
 
 const auth = (req, res, next) => {
   const { jwt } = req.cookies;

@@ -7,20 +7,28 @@ const {
 } = errorMessages;
 
 const items = {
-  email: Joi.string().label('Почта').email().required()
+  email: Joi.string().trim().label('Почта').email()
+    .required()
     .messages({ ...general, ...required, ...email }),
-  password: Joi.string().label('Пароль').required().pattern(new RegExp(passwordRegExp))
+  password: Joi.string().trim().label('Пароль').required()
+    .pattern(new RegExp(passwordRegExp))
     .messages({ ...general, ...required, ...password }),
-  userId: Joi.string().label('ID Пользователя').hex().length(24)
+  userId: Joi.string().trim().label('ID Пользователя').hex()
+    .length(24)
     .messages({ ...general, ...id }),
-  name: Joi.string().label('Имя').min(2).max(30)
+  name: Joi.string().trim().label('Имя').min(2)
+    .max(30)
     .messages({ ...general, ...text }),
-  about: Joi.string().label('О себе').min(2).max(30)
+  about: Joi.string().trim().label('О себе').min(2)
+    .max(30)
     .messages({ ...general, ...text }),
-  avatar: Joi.string().label('Ссылка на Аватар').pattern(new RegExp(urlRegExp)).messages({ ...general, ...url }),
-  link: Joi.string().label('Ссылка на Изображение').required().pattern(new RegExp(urlRegExp))
+  avatar: Joi.string().trim().label('Ссылка на Аватар').pattern(new RegExp(urlRegExp))
     .messages({ ...general, ...url }),
-  cardId: Joi.string().label('ID Карточки').hex().length(24)
+  link: Joi.string().trim().label('Ссылка на Изображение').required()
+    .pattern(new RegExp(urlRegExp))
+    .messages({ ...general, ...url }),
+  cardId: Joi.string().trim().label('ID Карточки').hex()
+    .length(24)
     .messages({ ...general, ...id }),
 };
 

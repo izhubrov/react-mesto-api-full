@@ -1,5 +1,6 @@
 const allowedCors = [
   'https://izhubrov-mesto.nomoreparties.club',
+  'https://izhubrov.github.io',
 ];
 
 const cors = (req, res, next) => {
@@ -9,13 +10,14 @@ const cors = (req, res, next) => {
   const requestHeaders = headers['Access-Control-Request-Headers'];
   const { origin } = headers;
 
-  if (method === 'OPTIONS') {
+  if (method === 'OPTIONS' && allowedCors.includes(origin)) {
     res.header('Access-Control-Allow-Methods', DEFAULT_ALLOWED_METHODS);
     res.header('Access-Control-Allow-Headers', requestHeaders);
+    // res.headers('Access-Control-Allow-Origin', origin);
   }
 
   if (allowedCors.includes(origin)) {
-    res.headers('Access-Control-Allow-Origin', origin);
+    res.header('Access-Control-Allow-Origin', origin);
   }
 
   next();

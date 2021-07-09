@@ -1,7 +1,6 @@
 const express = require('express');
 const mongoose = require('mongoose');
 const helmet = require('helmet');
-const expressWinston = require('express-winston');
 const cookieParser = require('cookie-parser');
 const { isCelebrateError } = require('celebrate');
 const usersRouter = require('./routes/users');

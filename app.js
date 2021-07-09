@@ -1,6 +1,7 @@
 const express = require('express');
 const mongoose = require('mongoose');
 const helmet = require('helmet');
+const expressWinston = require('express-winston');
 const cookieParser = require('cookie-parser');
 const { isCelebrateError } = require('celebrate');
 const usersRouter = require('./routes/users');
@@ -11,6 +12,7 @@ const NotFoundError = require('./errors/not-found-err');
 const ValidationError = require('./errors/validation-err');
 const { mongoUrl, mongoSettings } = require('./utils');
 const celebrateValidation = require('./helpers/celebrateValidation');
+const { requestLogger, errorLogger } = require('./middlewares/logger');
 
 const { PORT = 3000 } = process.env;
 const app = express();
@@ -22,16 +24,18 @@ app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 app.use(cookieParser());
 
+app.use(requestLogger);
+
 app.post('/signin', celebrateValidation({ body: { email: null, password: null } }), login);
-
 app.post('/signup', celebrateValidation({ body: { email: null, password: null } }), createUser);
-
 app.use('/users', auth, usersRouter);
 app.use('/cards', auth, cardsRouter);
 app.use('*', (req, res, next) => {
   const error = new NotFoundError('Запрашиваемый ресурс не найден');
   next(error);
 });
+
+app.use(errorLogger);
 
 app.use((err, req, res, next) => {
   if (isCelebrateError(err)) {

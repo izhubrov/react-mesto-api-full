@@ -11,16 +11,13 @@ const cors = (req, res, next) => {
   const requestHeaders = headers['access-control-request-headers'];
   const { origin } = headers;
 
-  if (allowedCors.includes(origin)) {
-    res.header('Access-Control-Allow-Origin', origin);
-  }
-
-  if (method === 'OPTIONS') {
+  if (method === 'OPTIONS' && allowedCors.includes(origin)) {
     res.set({
-      'Access-Control-Allow-Origin': origin,
       'Access-Control-Allow-Methods': DEFAULT_ALLOWED_METHODS,
       'Access-Control-Allow-Headers': requestHeaders,
     });
+  } else if (allowedCors.includes(origin)) {
+    res.header('Access-Control-Allow-Origin', origin);
   }
 
   next();

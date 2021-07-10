@@ -1,5 +1,5 @@
 const bcrypt = require('bcryptjs');
-const jwt = require('jsonwebtoken');
+const jsonwebtoken = require('jsonwebtoken');
 const User = require('../models/user');
 const UnauthorizedError = require('../errors/unauthorized-err');
 const NotFoundError = require('../errors/not-found-err');
@@ -17,9 +17,42 @@ const login = async (req, res, next) => {
     if (!isMatched) {
       throw new UnauthorizedError('Неправильные почта или пароль');
     } else {
-      const token = jwt.sign({ _id: user._id }, randomString, { expiresIn: '7d' });
+      const token = jsonwebtoken.sign({ _id: user._id }, randomString, { expiresIn: '7d' });
       res.status(200).cookie('jwt', token, { maxAge: 3600000 * 24 * 7 }).send({ message: 'Вы успешно авторизованы!' });
     }
+  } catch (error) {
+    next(error);
+  }
+};
+
+const logout = async (req, res, next) => {
+  try {
+    const { email } = req.body;
+    const { jwt } = req.cookies;
+
+    let verifiedUser = null;
+
+    if (!jwt) {
+      throw new UnauthorizedError('C токеном что-то не так');
+    }
+
+    const user = await User.findOne({ email });
+
+    if (!user) throw new NotFoundError('Пользователь с такой почтой не найден');
+
+    jsonwebtoken.verify(jwt, randomString, (err, decoded) => {
+      if (err) {
+        throw new UnauthorizedError('Необходима авторизация');
+      }
+      console.log(typeof user._id);
+      verifiedUser = decoded;
+      console.log(typeof verifiedUser._id);
+
+      if (user._id.toHexString() !== verifiedUser._id) {
+        throw new UnauthorizedError('Необходима авторизация');
+      }
+    });
+    res.status(200).clearCookie('jwt').send({ message: 'Вы успешно вышли из системы!' });
   } catch (error) {
     next(error);
   }
@@ -60,10 +93,13 @@ const createUser = async (req, res, next) => {
     const {
       name, about, avatar, email, password,
     } = req.body;
+
     const hash = await bcrypt.hash(password, 10);
+
     const user = await User.create({
       name, about, avatar, email, password: hash,
     });
+
     res.send({
       name: user.name, about: user.about, avatar: user.avatar, email: user.email,
     });
@@ -120,6 +156,7 @@ const setUserAvatar = async (req, res, next) => {
 
 module.exports = {
   login,
+  logout,
   readUsers,
   readUserInfo,
   readCurrentUserInfo,

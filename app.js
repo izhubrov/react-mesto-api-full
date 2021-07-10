@@ -6,7 +6,7 @@ const cookieParser = require('cookie-parser');
 const { isCelebrateError } = require('celebrate');
 const usersRouter = require('./routes/users');
 const cardsRouter = require('./routes/cards');
-const { login, createUser } = require('./controllers/users');
+const { login, createUser, logout } = require('./controllers/users');
 const auth = require('./middlewares/auth');
 const NotFoundError = require('./errors/not-found-err');
 const ValidationError = require('./errors/validation-err');
@@ -29,10 +29,11 @@ app.use(requestLogger);
 app.use(cors({
   origin: 'http://localhost:3000',
   credentials: true,
-  optionsSuccessStatus: 200,
+  // optionsSuccessStatus: 200,
 }));
 app.post('/signin', celebrateValidation({ body: { email: null, password: null } }), login);
 app.post('/signup', celebrateValidation({ body: { email: null, password: null } }), createUser);
+app.delete('/logout', logout);
 app.use('/users', auth, usersRouter);
 app.use('/cards', auth, cardsRouter);
 app.use('*', (req, res, next) => {

@@ -1,5 +1,6 @@
 const express = require('express');
 const mongoose = require('mongoose');
+const cors = require('cors');
 const helmet = require('helmet');
 const cookieParser = require('cookie-parser');
 const { isCelebrateError } = require('celebrate');
@@ -12,9 +13,8 @@ const ValidationError = require('./errors/validation-err');
 const { mongoUrl, mongoSettings } = require('./utils');
 const celebrateValidation = require('./helpers/celebrateValidation');
 const { requestLogger, errorLogger } = require('./middlewares/logger');
-const cors = require('./middlewares/cors');
 
-const { PORT = 3000 } = process.env;
+const { PORT = 3001 } = process.env;
 const app = express();
 
 mongoose.connect(mongoUrl, mongoSettings);
@@ -25,7 +25,11 @@ app.use(express.json());
 app.use(cookieParser());
 
 app.use(requestLogger);
-app.use(cors);
+app.use(cors({
+  origin: 'http://localhost:3000',
+  credentials: true,
+  optionsSuccessStatus: 200,
+}));
 app.post('/signin', celebrateValidation({ body: { email: null, password: null } }), login);
 app.post('/signup', celebrateValidation({ body: { email: null, password: null } }), createUser);
 app.use('/users', auth, usersRouter);

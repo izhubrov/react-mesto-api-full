@@ -18,7 +18,7 @@ const login = async (req, res, next) => {
       throw new UnauthorizedError('Неправильные почта или пароль');
     } else {
       const token = jwt.sign({ _id: user._id }, randomString, { expiresIn: '7d' });
-      res.cookie('jwt', token, { maxAge: 3600000 * 24 * 7 }).end();
+      res.status(200).cookie('jwt', token, { maxAge: 3600000 * 24 * 7 }).send({ message: 'Вы успешно авторизованы!' });
     }
   } catch (error) {
     next(error);

@@ -22,11 +22,11 @@ mongoose.connect(mongoUrl, mongoSettings);
 app.use(helmet());
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
+app.use(cors);
 app.use(cookieParser());
 
 app.use(requestLogger);
 
-app.use(cors);
 app.post('/signin', celebrateValidation({ body: { email: null, password: null } }), login);
 app.post('/signup', celebrateValidation({ body: { email: null, password: null } }), createUser);
 app.use('/users', auth, usersRouter);

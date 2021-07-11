@@ -4,7 +4,7 @@ const NotFoundError = require('../errors/not-found-err');
 
 const readCards = async (req, res, next) => {
   try {
-    const cards = await Card.find({}).populate(['likes', 'owner']);
+    const cards = await Card.find({}).populate(['likes', 'owner']).sort('-createdAt');
     res.send(cards);
   } catch (error) {
     next(error);

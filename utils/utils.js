@@ -11,6 +11,7 @@ const corsOptions = {
   origin: [
     'https://izhubrov-mesto.nomoredomains.club',
     'http://localhost:3000',
+    'https://web.postman.co',
   ],
   credentials: true,
 };

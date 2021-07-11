@@ -5,6 +5,8 @@ const UnauthorizedError = require('../errors/unauthorized-err');
 const NotFoundError = require('../errors/not-found-err');
 const { randomString } = require('../utils/utils');
 
+const { NODE_ENV, JWT_SECRET } = process.env;
+
 const login = async (req, res, next) => {
   try {
     const { email, password } = req.body;
@@ -17,8 +19,13 @@ const login = async (req, res, next) => {
     if (!isMatched) {
       throw new UnauthorizedError('Неправильные почта или пароль');
     } else {
-      const token = jsonwebtoken.sign({ _id: user._id }, randomString, { expiresIn: '7d' });
-      res.status(200).cookie('jwt', token, { maxAge: 3600000 * 24 * 7 }).send({ message: 'Вы успешно авторизованы!' });
+      const token = jsonwebtoken.sign(
+        { _id: user._id },
+        NODE_ENV === 'production' ? JWT_SECRET : randomString,
+        { expiresIn: '7d' },
+      );
+      res.status(200).cookie('jwt', token, { maxAge: 3600000 * 24 * 7, sameSite: 'none', secure: true })
+        .send({ message: 'Вы успешно авторизованы!' });
     }
   } catch (error) {
     next(error);
@@ -40,19 +47,18 @@ const logout = async (req, res, next) => {
 
     if (!user) throw new NotFoundError('Пользователь с такой почтой не найден');
 
-    jsonwebtoken.verify(jwt, randomString, (err, decoded) => {
+    jsonwebtoken.verify(jwt, NODE_ENV === 'production' ? JWT_SECRET : randomString, (err, decoded) => {
       if (err) {
         throw new UnauthorizedError('Необходима авторизация');
       }
-      console.log(typeof user._id);
       verifiedUser = decoded;
-      console.log(typeof verifiedUser._id);
 
       if (user._id.toHexString() !== verifiedUser._id) {
         throw new UnauthorizedError('Необходима авторизация');
       }
     });
-    res.status(200).clearCookie('jwt').send({ message: 'Вы успешно вышли из системы!' });
+    res.status(200).clearCookie('jwt', { sameSite: 'none', secure: true })
+      .send({ message: 'Вы успешно вышли из системы!' });
   } catch (error) {
     next(error);
   }

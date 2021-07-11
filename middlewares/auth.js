@@ -4,6 +4,7 @@ const { randomString } = require('../utils/utils');
 
 const auth = (req, res, next) => {
   const { jwt } = req.cookies;
+  const { NODE_ENV, JWT_SECRET } = process.env;
 
   try {
     if (!jwt) {
@@ -14,7 +15,7 @@ const auth = (req, res, next) => {
   }
 
   try {
-    jsonwebtoken.verify(jwt, randomString, (err, decoded) => {
+    jsonwebtoken.verify(jwt, NODE_ENV === 'production' ? JWT_SECRET : randomString, (err, decoded) => {
       if (err) {
         throw new UnauthorizedError('Необходима авторизация');
       }

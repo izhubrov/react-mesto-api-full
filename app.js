@@ -1,3 +1,4 @@
+require('dotenv').config();
 const express = require('express');
 const mongoose = require('mongoose');
 const cors = require('cors');
@@ -10,27 +11,27 @@ const { login, createUser, logout } = require('./controllers/users');
 const auth = require('./middlewares/auth');
 const NotFoundError = require('./errors/not-found-err');
 const ValidationError = require('./errors/validation-err');
-const { mongoUrl, mongoSettings } = require('./utils/utils');
+const { mongoUrl, mongoSettings, corsOptions } = require('./utils/utils');
 const errorMessages = require('./utils/celebrateErrorMessages');
 const celebrateValidation = require('./helpers/celebrateValidation');
 const { requestLogger, errorLogger } = require('./middlewares/logger');
 
-const { PORT = 3001 } = process.env;
 const app = express();
-
+const { NODE_ENV, PORT } = process.env;
 mongoose.connect(mongoUrl, mongoSettings);
 
 app.use(helmet());
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 app.use(cookieParser());
-
 app.use(requestLogger);
-app.use(cors({
-  origin: 'http://localhost:3000',
-  credentials: true,
-  // optionsSuccessStatus: 200,
-}));
+app.use(cors(corsOptions));
+
+app.get('/crash-test', () => {
+  setTimeout(() => {
+    throw new Error('Сервер сейчас упадёт');
+  }, 0);
+});
 app.post('/signin', celebrateValidation({ body: { email: null, password: null } }), login);
 app.post('/signup', celebrateValidation({ body: { email: null, password: null } }), createUser);
 app.delete('/logout', logout);
@@ -42,7 +43,6 @@ app.use('*', (req, res, next) => {
 });
 
 app.use(errorLogger);
-
 app.use((err, req, res, next) => {
   // Если в celebrate будут другие параметры кроме body, params, их необходимо добавить в errorItem
   if (isCelebrateError(err)) {
@@ -63,4 +63,4 @@ app.use((err, req, res, next) => {
   res.status(code).send({ message: code === 500 ? 'Ошибка на стороне сервера' : message });
 });
 
-app.listen(PORT);
+app.listen(NODE_ENV === 'production' ? PORT : 3001);

@@ -7,14 +7,23 @@ const mongoSettings = {
 
 const mongoUrl = 'mongodb://localhost:27017/mestodb';
 
-const randomString = 'd14c698d0500ab4a6ee06a893dd351dd5d5b3c53cbd6692ed0d900d615bc5ec3';
+const corsOptions = {
+  origin: [
+    'https://izhubrov-mesto.nomoredomains.club',
+    'http://localhost:3000',
+  ],
+  credentials: true,
+};
+
+const randomString = 'some-secret-key';
 
 const urlRegExp = /https?:\/\/(www\.)?[-a-zA-Z0-9@:%._\+~#=]{1,256}\.[a-zA-Z0-9()]{1,6}\b([\-a-zA-Z0-9\(\)@:%_\+\.~#?&\/=;,*'$!@\[\]]*)/;
-const passwordRegExp = /^(?=.*[0-9])(?=.*[!@#$%^&*])(?=.*[a-z])(?=.*[A-Z])[a-zA-Z0-9!@#$%^&*]{6,}$/;
+const passwordRegExp = /^(?=.*[0-9])(?=.*[!@#$%^&*])(?=.*[a-z])(?=.*[A-Z])[a-zA-Z0-9!@#$%^&*]{8,}$/;
 
 module.exports = {
   mongoSettings,
   mongoUrl,
+  corsOptions,
   randomString,
   urlRegExp,
   passwordRegExp,

@@ -1,0 +1,16 @@
+.cards__item {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-start;
+  border-radius: calc(10/282*100%);
+  overflow: hidden;
+  position: relative;
+  transition: all .1s ease-in-out;
+}
+
+.cards__item:hover {
+  box-shadow:0 0 5px 5px rgba(255,255,255,0.2);
+  transform: translateY(-2px);
+}

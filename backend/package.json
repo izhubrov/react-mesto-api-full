@@ -11,15 +11,15 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/izhubrov/express-mesto"
+    "url": "git+https://github.com/izhubrov/react-mesto-api-full"
   },
   "keywords": [],
   "author": "Ivan Zhubrov",
   "license": "ISC",
   "bugs": {
-    "url": "https://github.com/izhubrov/express-mesto/issues"
+    "url": "https://github.com/izhubrov/react-mesto-api-full/issues"
   },
-  "homepage": "https://github.com/izhubrov/express-mesto#readme",
+  "homepage": "https://github.com/izhubrov/react-mesto-api-full#readme",
   "devDependencies": {
     "eslint": "^7.28.0",
     "eslint-config-airbnb-base": "^14.2.1",

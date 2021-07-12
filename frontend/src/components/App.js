@@ -395,7 +395,7 @@ function App() {
           isLoading={isLoading}
         />
 
-        <ImagePopup card={selectedCard} onClose={closeAllPopups} />
+        <ImagePopup card={selectedCard} onCheckImage={checkImage} onClose={closeAllPopups} />
 
         <ErrorPopup errorText={error.errorText} isActive={error.isActive} />
 

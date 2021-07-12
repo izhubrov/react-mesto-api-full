@@ -24,12 +24,12 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/izhubrov/react-mesto-auth.git"
+    "url": "git+https://github.com/izhubrov/react-mesto-api-full.git"
   },
   "author": "Ivan Zhubrov",
   "license": "ISC",
   "bugs": {
-    "url": "https://github.com/izhubrov/react-mesto-auth/issues"
+    "url": "https://github.com/izhubrov/react-mesto-api-full/issues"
   },
   "homepage": ".",
   "eslintConfig": {

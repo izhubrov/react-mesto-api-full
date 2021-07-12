@@ -1,4 +1,4 @@
-import baseUrl from "./utils.js";
+import { baseUrl } from "./utils.js";
 class Api {
   constructor(baseUrl) {
     this._baseUrl = baseUrl;

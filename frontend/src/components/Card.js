@@ -1,6 +1,7 @@
 /* eslint-disable react/prop-types */
 import React from 'react';
 import {CurrentUserContext} from '../contexts/CurrentUserContext.js';
+import { notAvailableCardLink } from '../utils/utils';
 
 function Card({ card, onCheckImage, onCardClick, onCardLike, onCardDelete }) {
   const currentUser = React.useContext(CurrentUserContext);
@@ -14,7 +15,7 @@ function Card({ card, onCheckImage, onCardClick, onCardLike, onCardDelete }) {
 
   React.useEffect(()=>{
     onCheckImage(cardLinkChecked)
-      .catch(()=> setCardLinkChecked('https://images.unsplash.com/photo-1610513320995-1ad4bbf25e55?ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&ixlib=rb-1.2.1&auto=format&fit=crop&w=1050&q=80'));
+      .catch(()=> setCardLinkChecked(notAvailableCardLink));
   // eslint-disable-next-line
   },[]);
   

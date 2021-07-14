@@ -24,7 +24,9 @@ const login = async (req, res, next) => {
         NODE_ENV === 'production' ? JWT_SECRET : randomString,
         { expiresIn: '7d' },
       );
-      res.status(200).cookie('jwt', token, { maxAge: 3600000 * 24 * 7, sameSite: 'none', secure: true })
+      res.status(200).cookie('jwt', token, {
+        maxAge: 3600000 * 24 * 7, httpOnly: true, sameSite: 'none', secure: true,
+      })
         .send({ message: 'Вы успешно авторизованы!' });
     }
   } catch (error) {
@@ -57,7 +59,7 @@ const logout = async (req, res, next) => {
         throw new UnauthorizedError('Необходима авторизация');
       }
     });
-    res.status(200).clearCookie('jwt', { sameSite: 'none', secure: true })
+    res.status(200).clearCookie('jwt', { httpOnly: true, sameSite: 'none', secure: true })
       .send({ message: 'Вы успешно вышли из системы!' });
   } catch (error) {
     next(error);

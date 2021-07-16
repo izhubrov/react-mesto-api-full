@@ -25,7 +25,7 @@ const login = async (req, res, next) => {
         { expiresIn: '7d' },
       );
       res.status(200).cookie('jwt', token, {
-        maxAge: 3600000 * 24 * 7, httpOnly: true, domain: 'https://api.izhubrov-mesto.nomoredomains.monster', secure: true, sameSite: 'none',
+        maxAge: 3600000 * 24 * 7, httpOnly: true, domain: '.nomoredomains.monster', secure: true, sameSite: 'none',
       })
         .send({ message: 'Вы успешно авторизованы!' });
     }
@@ -60,7 +60,7 @@ const logout = async (req, res, next) => {
       }
     });
     res.status(200).clearCookie('jwt', {
-      httpOnly: true, domain: 'https://api.izhubrov-mesto.nomoredomains.monster', secure: true, sameSite: 'none',
+      httpOnly: true, domain: '.nomoredomains.monster', secure: true, sameSite: 'none',
     })
       .send({ message: 'Вы успешно вышли из системы!' });
   } catch (error) {

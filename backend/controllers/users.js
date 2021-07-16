@@ -28,7 +28,7 @@ const login = async (req, res, next) => {
       //   maxAge: 3600000 * 24 * 7, httpOnly: true, sameSite: 'none', secure: true,
       // })
       res.status(200).cookie('jwt', token, {
-        maxAge: 3600000 * 24 * 7, domain: '.nomoredomains.club', encode: String, secure: true,
+        maxAge: 3600000 * 24 * 7, domain: 'https://izhubrov-mesto.nomoredomains.club', secure: true,
       })
         .send({ message: 'Вы успешно авторизованы!' });
     }

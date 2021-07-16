@@ -59,7 +59,7 @@ const logout = async (req, res, next) => {
         throw new UnauthorizedError('Необходима авторизация');
       }
     });
-    res.status(200).clearCookie('jwt', { httpOnly: true, secure: true })
+    res.status(200).clearCookie('jwt', { httpOnly: true, domain: 'https://izhubrov-mesto.nomoredomains.club', secure: true })
       .send({ message: 'Вы успешно вышли из системы!' });
   } catch (error) {
     next(error);

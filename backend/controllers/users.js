@@ -24,12 +24,8 @@ const login = async (req, res, next) => {
         NODE_ENV === 'production' ? JWT_SECRET : randomString,
         { expiresIn: '7d' },
       );
-      // res.status(200).cookie('jwt', token, {
-      //   maxAge: 3600000 * 24 * 7, httpOnly: true, sameSite: 'none' , secure: true,
-      // })
-      //domain: 'https://izhubrov-mesto.nomoredomains.club'
       res.status(200).cookie('jwt', token, {
-        maxAge: 3600000 * 24 * 7, sameSite: 'none', secure: true,
+        maxAge: 3600000 * 24 * 7, httpOnly: true, sameSite: 'none', secure: true,
       })
         .send({ message: 'Вы успешно авторизованы!' });
     }

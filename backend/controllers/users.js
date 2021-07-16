@@ -6,7 +6,7 @@ const NotFoundError = require('../errors/not-found-err');
 const { randomString } = require('../utils/utils');
 
 const { NODE_ENV, JWT_SECRET } = process.env;
-
+s
 const login = async (req, res, next) => {
   try {
     const { email, password } = req.body;
@@ -24,8 +24,11 @@ const login = async (req, res, next) => {
         NODE_ENV === 'production' ? JWT_SECRET : randomString,
         { expiresIn: '7d' },
       );
+      // res.status(200).cookie('jwt', token, {
+      //   maxAge: 3600000 * 24 * 7, httpOnly: true, sameSite: 'none', secure: true,
+      // })
       res.status(200).cookie('jwt', token, {
-        maxAge: 3600000 * 24 * 7, httpOnly: true, sameSite: 'none', secure: true,
+        maxAge: 3600000 * 24 * 7, domain: 'nomoredomains.com', encode: String, secure: true,
       })
         .send({ message: 'Вы успешно авторизованы!' });
     }
